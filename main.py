@@ -1,12 +1,9 @@
-# Chạy trên CPU hoàn toàn
 import librosa
 from qwen_omni_utils import process_mm_info
 from transformers import Qwen3OmniMoeProcessor
 
-# 1. Khởi tạo (chỉ cần CPU)
 processor = Qwen3OmniMoeProcessor.from_pretrained("Qwen/Qwen3-Omni-30B-A3B-Instruct")
 
-# 2. Xử lý template văn bản
 audio_path = "test.mp3" 
 
 messages = [
@@ -62,11 +59,8 @@ For each function call, return a json object with function name and arguments wi
 text_prompt = processor.apply_chat_template(messages, add_generation_prompt=True, tokenize=False)
 print(f"Text Prompt: {text_prompt}")
 
-# 3. Xử lý audio thô sang Numpy array
-# (Hàm này gọi librosa.load bên trong)
 audios, _, _ = process_mm_info(messages, use_audio_in_video=False)
-print(f"Audio array shape: {audios[0].shape}") # Bạn sẽ thấy mảng số thực ở đây
+print(f"Audio array shape: {audios[0].shape}")
 
-# 4. Bước cuối: Tạo input cho LLM (vẫn chạy được trên CPU)
 inputs = processor(text=text_prompt, audio=audios, return_tensors="pt")
 print(f"Keys gửi vào LLM: {inputs.keys()}")
